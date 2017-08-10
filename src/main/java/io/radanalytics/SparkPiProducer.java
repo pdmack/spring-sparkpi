@@ -8,11 +8,26 @@ import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.springframework.stereotype.*;
+import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.annotation.*;
+import javax.validation.constraints.*;
+import javax.annotation.*;
 
+@Component
 public class SparkPiProducer implements Serializable {
+
+    @Value("${sparkpi.jarfile}")
+    private String jarFile;
+
+    @PostConstruct
+    public void print() {
+        System.out.println("submit jar is: "+jarFile);
+    }
+
     public String GetPi() {
         SparkConf sparkConf = new SparkConf().setAppName("JavaSparkPi");
-        sparkConf.setJars(new String[]{"/tmp/src/target/SparkPiBoot-0.0.1-SNAPSHOT.jar.original"});
+        sparkConf.setJars(new String[]{this.jarFile});
         JavaSparkContext jsc = new JavaSparkContext(sparkConf);
 
         int slices = 2;
